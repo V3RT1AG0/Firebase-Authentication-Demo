@@ -48,12 +48,12 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
 
-
         Calendar c = Calendar.getInstance();
-        year = String.valueOf(c.get(Calendar.YEAR)-1);
+        year = String.valueOf(c.get(Calendar.YEAR));
         month = getResources().getStringArray(R.array.months)[c.get(Calendar.MONTH)];
 
-        database = FirebaseDatabase.getInstance().getReference();
+
+
         chart = findViewById(R.id.chart);
         chart.setDrawGridBackground(false);
         chart.setDrawBorders(false);
@@ -71,17 +71,18 @@ public class MainActivity extends AppCompatActivity
         xAxis.setGranularity(1);
 
         chart.getAxisRight().setDrawLabels(false);
-        initializeChart(year,month);
+        initializeChart();
+        setSpinner();
 
     }
 
-    private void initializeChart(final String year, final String month)
+    private void initializeChart()
     {
+        database = FirebaseDatabase.getInstance().getReference();
         final List<Entry> voltageEntries = new ArrayList<>();
         final List<Entry> currentEntries = new ArrayList<>();
 
-
-        ValueEventListener val = new ValueEventListener()
+        database.child(year).child(month).child(CURRENT).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
@@ -92,10 +93,9 @@ public class MainActivity extends AppCompatActivity
                     Log.d("TAG",snap.toString());
                     GraphStructure currentGraph = snap.getValue(GraphStructure.class);
                     currentEntries.add(new Entry(currentGraph.getDate(),currentGraph.getValue()));
-                    Log.d("TAG",currentGraph.getValue()+ "");
+                    Log.d("TAG1",currentGraph.getValue()+""+year + " " + month + " ");
                 }
                 flag++;
-                database.child(year).child(month).child(CURRENT).removeEventListener(this);
                 if (flag == 2)
                     DisplayGraph(currentEntries,voltageEntries);
             }
@@ -105,10 +105,7 @@ public class MainActivity extends AppCompatActivity
             {
 
             }
-        };
-
-
-        database.child(year).child(month).child(CURRENT).addValueEventListener(val);
+        });
 
 
         database.child(year).child(month).child(VOLTAGE).addValueEventListener(new ValueEventListener()
@@ -154,7 +151,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     void DisplayGraph(List<Entry> currentEntries, List<Entry> voltageEntries){
-
+        flag = 0;
         LineDataSet currentDataSet = new LineDataSet(currentEntries, "Current");
         currentDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
         currentDataSet.setLineWidth(2);
@@ -180,9 +177,9 @@ public class MainActivity extends AppCompatActivity
 
         LineData lineData = new LineData(dataSets);
         chart.setData(lineData);
-        chart.invalidate();
+        chart.postInvalidate();
 
-        setSpinner();
+
     }
 
     private void setSpinner()
@@ -192,6 +189,7 @@ public class MainActivity extends AppCompatActivity
                 R.array.years, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         Yearspinner.setAdapter(adapter);
+        Yearspinner.setSelection(Integer.parseInt(year)-2018);
         Yearspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             @Override
@@ -200,9 +198,7 @@ public class MainActivity extends AppCompatActivity
                 Resources res = getResources();
                 String[] years = res.getStringArray(R.array.years);
                 year = years[i];
-                Yearspinner.setOnItemSelectedListener(null);
-
-                initializeChart(year,month);
+                clearData();
             }
 
             @Override
@@ -218,6 +214,7 @@ public class MainActivity extends AppCompatActivity
                 R.array.months, android.R.layout.simple_spinner_item);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         Monthspinner.setAdapter(adapter2);
+        Monthspinner.setSelection(Calendar.getInstance().get(Calendar.MONTH));
 
         Monthspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
@@ -227,8 +224,7 @@ public class MainActivity extends AppCompatActivity
                 Resources res = getResources();
                 String[] months = res.getStringArray(R.array.months);
                 month = months[i];
-                Monthspinner.setOnItemSelectedListener(null);
-                initializeChart(year,month);
+                clearData();
             }
 
             @Override
@@ -237,5 +233,13 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+    }
+
+    private void clearData()
+    {
+        chart.clear();
+//        chart.clearValues();
+        chart.postInvalidate();
+        initializeChart();
     }
 }
