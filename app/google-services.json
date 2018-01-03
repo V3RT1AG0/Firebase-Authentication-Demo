@@ -1,0 +1,86 @@
+{
+  "project_info": {
+    "project_number": "291446252301",
+    "firebase_url": "https://smart-grid-systems.firebaseio.com",
+    "project_id": "smart-grid-systems",
+    "storage_bucket": "smart-grid-systems.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:291446252301:android:9fd63cf865fc4990",
+        "android_client_info": {
+          "package_name": "com.smartgridsystems.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "291446252301-oe20ah81rilmo9papvkvalaak426duis.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD__cbRyfs5_0DUc6tVnBqBHZfBSR4foAo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:291446252301:android:013680a7d3a695fe",
+        "android_client_info": {
+          "package_name": "com.example.v3rt1ag0.smartgridsystem"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "291446252301-557i309o2o2gdrc8jqtrbd50tfc665sl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.v3rt1ag0.smartgridsystem",
+            "certificate_hash": "7e95c1f3b17abfafa24c8a4ba5f3adb85be634b9"
+          }
+        },
+        {
+          "client_id": "291446252301-oe20ah81rilmo9papvkvalaak426duis.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD__cbRyfs5_0DUc6tVnBqBHZfBSR4foAo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "291446252301-oe20ah81rilmo9papvkvalaak426duis.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
