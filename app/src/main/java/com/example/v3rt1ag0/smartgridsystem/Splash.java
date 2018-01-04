@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,8 +25,9 @@ public class Splash extends AppCompatActivity
 {
     private FirebaseAuth mAuth;
     SharedPreferences pref;
-    Button signUp, signIn;
-    TextView email, password,plantID;
+    Button  signIn;
+    TextView signUp,reset;
+    EditText email,password;
     private static final String TAG = "Splash";
     private static final String key = "com.smartgrid";
 
@@ -38,7 +40,7 @@ public class Splash extends AppCompatActivity
         signIn = findViewById(R.id.custom_signin_button);
         email = findViewById(R.id.email_edittext);
         password = findViewById(R.id.password_edittext);
-        plantID = findViewById(R.id.plant_edittext);
+        reset = findViewById(R.id.forgot_password);
         mAuth = FirebaseAuth.getInstance();
         pref= getSharedPreferences(key, Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = pref.edit();
@@ -48,60 +50,24 @@ public class Splash extends AppCompatActivity
             startActivity(new Intent(this,MainActivity.class));
         }
 
-
         signUp.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                if(password.getText().length()<7)
-                {
-                    Toast.makeText(Splash.this, "Password must have at least 7 characters",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if(!plantID.getText().toString().equals("xyz"))
-                {
-                    Log.d(TAG, plantID.getText().toString());
-                    Toast.makeText(Splash.this, "Plant ID is incorrect",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                mAuth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString())
-                        .addOnCompleteListener(Splash.this, new OnCompleteListener<AuthResult>()
-                        {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task)
-                            {
-                                if (task.isSuccessful())
-                                {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    Log.d(TAG, "createUserWithEmail:success");
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    email.setText("");
-                                    password.setText("");
-                                    plantID.setText("");
-                                    verifyEmail(user);
-                                    //updateUI(user);
-                                } else
-                                {
-                                    // If sign in fails, display a message to the user.
-                                    Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                    Toast.makeText(Splash.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
-                                    email.setText("");
-                                    password.setText("");
-                                    // updateUI(null);
-                                }
-
-                            }
-                        });
-
-
+                startActivity(new Intent(Splash.this,SignUpActivity.class));
             }
         });
+
+        reset.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                startActivity(new Intent(Splash.this,ForgotPasswordActivity.class));
+            }
+        });
+
 
 
         signIn.setOnClickListener(new View.OnClickListener()
@@ -109,6 +75,8 @@ public class Splash extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
+                if(email.getText().length()==0||password.getText().length()==0)
+                    return;
                 mAuth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString())
                         .addOnCompleteListener(Splash.this, new OnCompleteListener<AuthResult>()
                         {
@@ -119,6 +87,7 @@ public class Splash extends AppCompatActivity
                                 {
                                     // Sign in success, update UI with the signed-in user's information
                                     Log.d(TAG, "signInWithEmail:success ");
+
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     if (user.isEmailVerified())
                                     {
@@ -143,27 +112,7 @@ public class Splash extends AppCompatActivity
         });
     }
 
-    private void verifyEmail(final FirebaseUser user)
-    {
-        user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<Void> task)
-            {
-                if (task.isSuccessful())
-                {
-                    Toast.makeText(Splash.this,
-                            "Verification email sent to " + user.getEmail(),
-                            Toast.LENGTH_SHORT).show();
-                } else
-                {
-                    Log.e(TAG, "sendEmailVerification", task.getException());
-                    Toast.makeText(Splash.this, "Failed to send verification email.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
 
-    }
 
     @Override
     protected void onStart()
